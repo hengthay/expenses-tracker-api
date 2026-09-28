@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: myapp
+  datasource:
+    url: jdbc:mysql://localhost:3306/expenses_api?createDatabaseIfNotExist=true
+    username: root
+    password: Ab2ccc@@
+  jpa:
+    show-sql: true
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 3600 # 1h
+    refreshTokenExpiration: 604800 # 7d
