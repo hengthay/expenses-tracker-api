@@ -2,6 +2,8 @@ package com.hengthay.myapp.controllers;
 
 import com.hengthay.myapp.dtos.LoginRequest;
 import com.hengthay.myapp.dtos.LoginResponse;
+import com.hengthay.myapp.repository.UserRepository;
+import com.hengthay.myapp.services.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
@@ -30,7 +34,15 @@ public class AuthController {
                 )
         );
 
-        return ResponseEntity.ok(new LoginResponse("Login successfully!"));
+        var user = userRepository.findUserByEmail(request.getEmail()).orElse(null);
+
+        if(user == null)
+            return ResponseEntity.notFound().build();
+
+        var accessToken = jwtService.getAccessToken(user);
+        var refreshToken = jwtService.getRefreshToken(user);
+
+        return ResponseEntity.ok(new LoginResponse(accessToken, refreshToken));
     }
 
     // Handle unauthorize if invalid information

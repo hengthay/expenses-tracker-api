@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // we use this method for encryption our password
     @Bean
@@ -55,13 +56,24 @@ public class SecurityConfig {
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( c -> {
-                            c.requestMatchers("/api/users/**").permitAll();
+//                            c.requestMatchers("/api/users/**").permitAll();
                             c.requestMatchers("/api/categories/**").permitAll();
                             c.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
                             c.anyRequest().authenticated();
                         }
-                );
+                )
+                // Check token before access to endpoints
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(c -> {
+                    c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                    c.accessDeniedHandler((((request, response, accessDeniedException) ->
+                            response.setStatus(HttpStatus.FORBIDDEN.value())
+                            )));
+                });
 
-                return http.build();
+        // Note: by default spring will treat when user tried to access protected
+        // as 403 error code rather than 401
+        // To handle it we can use exceptionHandling to make it correct.
+        return http.build();
     }
 }
