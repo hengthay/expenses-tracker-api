@@ -24,12 +24,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
+
+    private final UserDetailsService userDetailsService;
+
     // we use this method for encryption our password
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // To authenticate user with Spring Security
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        var provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) {
+        return config.getAuthenticationManager();
+    }
     // filter protected resource
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -2,38 +2,40 @@ package com.hengthay.myapp.controllers;
 
 import com.hengthay.myapp.dtos.LoginRequest;
 import com.hengthay.myapp.dtos.LoginResponse;
-import com.hengthay.myapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request
             ) {
-
-        var user = userRepository.findUserByEmail(request.getEmail()).orElse(null);
-
-        if(user == null)
-            return ResponseEntity.notFound().build();
-        // Verify hashing password
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        // To authenticate user with authenticationManager
+        // that will check user information and hashed password
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
         return ResponseEntity.ok(new LoginResponse("Login successfully!"));
+    }
+
+    // Handle unauthorize if invalid information
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Void> handleBadCredentialsException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
