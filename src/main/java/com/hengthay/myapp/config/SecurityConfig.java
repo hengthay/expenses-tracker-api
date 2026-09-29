@@ -59,6 +59,7 @@ public class SecurityConfig {
 //                            c.requestMatchers("/api/users/**").permitAll();
                             c.requestMatchers("/api/categories/**").permitAll();
                             c.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
+                            c.requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll();
                             c.anyRequest().authenticated();
                         }
                 )
