@@ -1,5 +1,6 @@
 package com.hengthay.myapp.config;
 
+import com.hengthay.myapp.controllers.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,10 +57,11 @@ public class SecurityConfig {
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( c -> {
-//                            c.requestMatchers("/api/users/**").permitAll();
+                            c.requestMatchers("/api/users/**").permitAll();
                             c.requestMatchers("/api/categories/**").permitAll();
                             c.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
                             c.requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll();
+                            c.requestMatchers(HttpMethod.GET, "/api/accounts").hasRole(Role.ADMIN.name()); // allow only admin
                             c.anyRequest().authenticated();
                         }
                 )

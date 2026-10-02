@@ -11,7 +11,7 @@ create table users
 
 create table accounts
 (
-    id         binary    default (uuid_to_bin(uuid())) not null
+    id         binary(16)    default (uuid_to_bin(uuid())) not null
         primary key,
     user_id    bigint                                not null,
     name       varchar(100)                          not null,

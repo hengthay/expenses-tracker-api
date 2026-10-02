@@ -6,6 +6,7 @@ import com.hengthay.myapp.dtos.LoginResponse;
 import com.hengthay.myapp.dtos.UserDto;
 import com.hengthay.myapp.mappers.UserMapper;
 import com.hengthay.myapp.repository.UserRepository;
+import com.hengthay.myapp.services.AuthService;
 import com.hengthay.myapp.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +28,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final JwtConfig jwtConfig;
     private final UserMapper userMapper;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
@@ -82,11 +83,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserDto> me() {
-        // get authentication user from filter we set
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userId = (Long) authentication.getPrincipal(); // extract user id
-
-        var user = userRepository.findById(userId).orElse(null); // find in database
+        var user = authService.getCurrentUser();
 
         if(user == null)
             return ResponseEntity.notFound().build();

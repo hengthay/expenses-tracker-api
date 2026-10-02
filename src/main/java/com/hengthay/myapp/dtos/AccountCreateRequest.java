@@ -6,7 +6,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class RequestAccountUpdate {
+public class AccountCreateRequest {
     private String name;
     private AccountType type;
+    private BigDecimal balance;
 }

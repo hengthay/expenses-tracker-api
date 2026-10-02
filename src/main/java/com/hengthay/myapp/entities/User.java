@@ -37,9 +37,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(name = "role")
+    private Role role = Role.USER;;
 
     @CreationTimestamp
     @Column(name = "created_at")
