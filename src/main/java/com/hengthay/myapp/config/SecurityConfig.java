@@ -62,6 +62,7 @@ public class SecurityConfig {
                             c.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
                             c.requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll();
                             c.requestMatchers(HttpMethod.GET, "/api/accounts").hasRole(Role.ADMIN.name()); // allow only admin
+                            c.requestMatchers(HttpMethod.GET, "/api/transactions").permitAll();
                             c.anyRequest().authenticated();
                         }
                 )

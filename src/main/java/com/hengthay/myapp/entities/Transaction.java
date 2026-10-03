@@ -1,5 +1,6 @@
 package com.hengthay.myapp.entities;
 
+import com.hengthay.myapp.controllers.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Table(name = "transactions", schema = "expenses_api")
 public class Transaction {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -43,7 +45,8 @@ public class Transaction {
     private BigDecimal amount;
 
     @Column(name = "type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
 
     @Column(name = "transaction_date")
     private LocalDate transactionDate;

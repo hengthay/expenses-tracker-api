@@ -31,7 +31,7 @@ public class AccountController {
                 .toList();
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AccountDto> getAccountById(@PathVariable UUID id) {
         var account = accountRepository.getAccountById(id).orElse(null);
 
@@ -43,7 +43,7 @@ public class AccountController {
         return ResponseEntity.ok(accountDto);
     }
 
-    @RequestMapping("/me")
+    @GetMapping("/me")
     public ResponseEntity<AccountDto> getMyAccount() {
         var user = authService.getCurrentUser();
 
@@ -78,7 +78,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountMapper.toDto(savedAccount));
     }
 
-    @PutMapping("/{id}/account-update")
+    @PutMapping("/{id}")
     public ResponseEntity<AccountDto> updateAccount(
             @PathVariable UUID id,
             @RequestBody RequestAccountUpdate request
@@ -114,6 +114,11 @@ public class AccountController {
         // to check only owner of this account can be update information
         if(user == null || !account.getUser().getId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if(!account.getTransactions().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Cannot delete account because it contains active transactions. Delete the transactions first.");
         }
 
         accountRepository.delete(account);
