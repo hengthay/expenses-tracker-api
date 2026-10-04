@@ -7,7 +7,7 @@ import com.hengthay.myapp.mappers.TransactionMapper;
 import com.hengthay.myapp.repository.AccountRepository;
 import com.hengthay.myapp.repository.CategoryRepository;
 import com.hengthay.myapp.repository.TransactionRepository;
-import com.hengthay.myapp.services.AuthService;
+import com.hengthay.myapp.auth.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +63,19 @@ public class TransactionController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(transactionMapper.toDto(transaction));
+    }
+
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<List<TransactionDto>> getTransactionByAccount(
+            @PathVariable UUID accountId
+    ) {
+        var transactions = transactionRepository
+                            .findAllByAccountId(accountId)
+                            .stream()
+                            .map(transactionMapper::toDto)
+                            .toList();
+
+        return ResponseEntity.ok(transactions);
     }
 
     @PostMapping

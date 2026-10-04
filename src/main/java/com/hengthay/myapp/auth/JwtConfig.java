@@ -1,4 +1,4 @@
-package com.hengthay.myapp.config;
+package com.hengthay.myapp.auth;
 
 
 import io.jsonwebtoken.security.Keys;

@@ -1,6 +1,5 @@
-package com.hengthay.myapp.config;
+package com.hengthay.myapp.auth;
 
-import com.hengthay.myapp.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,25 +34,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         var tokenString = authHeader.substring(7);
-        var isTokenValid = jwtService.validateToken(tokenString);
+        var jwt = jwtService.validateToken(tokenString);
 
         // If token not valid
-        if(!isTokenValid) {
+        if(jwt == null || jwt.isExpired()) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        // Extract user details from token
-        Long userId = jwtService.getUserIdFromToken(tokenString);
-        var userRole = jwtService.getUserRoleFromToken(tokenString);
 
         // Create the Spring Security authentication token.
         // Add SimpleGrantedAuthority to tell spring
         // which role able to access protected resource
         var authentication = new UsernamePasswordAuthenticationToken(
-                userId,
+                jwt.getUserId(),
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + userRole))
+                List.of(new SimpleGrantedAuthority("ROLE_" + jwt.getRole()))
         );
 
         // Attach web-specific metadata (client IP, session ID) to the token.

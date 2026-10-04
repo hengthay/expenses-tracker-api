@@ -1,6 +1,5 @@
-package com.hengthay.myapp.services;
+package com.hengthay.myapp.auth;
 
-import com.hengthay.myapp.config.JwtConfig;
 import com.hengthay.myapp.controllers.Role;
 import com.hengthay.myapp.entities.User;
 import io.jsonwebtoken.Claims;
@@ -16,40 +15,41 @@ public class JwtService {
     private final JwtConfig jwtConfig;
 
     // Get access token
-    public String getAccessToken(User user) {
+    public Jwt getAccessToken(User user) {
         return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
     // Get refresh token
-    public String getRefreshToken(User user) {
+    public Jwt getRefreshToken(User user) {
         return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
     // Generate token
-    public String generateToken(User user, long tokenExpiration) {
+    public Jwt generateToken(User user, long tokenExpiration) {
         // use Jwt to build and generate token from login user
         // and set jwt token information
-        return Jwts.builder()
+        Claims claims = Jwts.claims()
                 .subject(user.getId().toString())
-                .claim("name", user.getUsername())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole())
+                .add("name", user.getUsername())
+                .add("email", user.getEmail())
+                .add("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(jwtConfig.getSecretKey())
-                .compact();
+                .build();
+
+        return new Jwt(claims, jwtConfig.getSecretKey());
     }
 
     // To check if token valid
-    public boolean validateToken(String token) {
+    public Jwt validateToken(String token) {
         try {
             // If getClaims succeeds, JJWT has already verified the signature
             // and confirmed the expiration date is strictly in the future.
-            getClaims(token);
+            var claims = getClaims(token);
 
-            return true;
+            return new Jwt(claims, jwtConfig.getSecretKey());
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 

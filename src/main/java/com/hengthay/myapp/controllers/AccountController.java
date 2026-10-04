@@ -5,7 +5,7 @@ import com.hengthay.myapp.dtos.AccountDto;
 import com.hengthay.myapp.dtos.RequestAccountUpdate;
 import com.hengthay.myapp.mappers.AccountMapper;
 import com.hengthay.myapp.repository.AccountRepository;
-import com.hengthay.myapp.services.AuthService;
+import com.hengthay.myapp.auth.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
