@@ -1,4 +1,4 @@
-package com.hengthay.myapp.repository;
+package com.hengthay.myapp.user;
 
 import com.hengthay.myapp.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;

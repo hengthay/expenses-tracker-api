@@ -1,7 +1,7 @@
 package com.hengthay.myapp.config;
 
 import com.hengthay.myapp.auth.JwtAuthenticationFilter;
-import com.hengthay.myapp.controllers.Role;
+import com.hengthay.myapp.user.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

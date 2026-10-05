@@ -1,5 +1,6 @@
 package com.hengthay.myapp.dtos;
 
+import com.hengthay.myapp.user.UserDto;
 import lombok.Data;
 
 import java.math.BigDecimal;

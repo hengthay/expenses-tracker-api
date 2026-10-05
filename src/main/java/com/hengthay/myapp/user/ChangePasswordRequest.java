@@ -1,4 +1,4 @@
-package com.hengthay.myapp.dtos;
+package com.hengthay.myapp.user;
 
 import lombok.Data;
 

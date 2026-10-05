@@ -1,4 +1,4 @@
-package com.hengthay.myapp.controllers;
+package com.hengthay.myapp.user;
 
 public enum Role {
     ADMIN,

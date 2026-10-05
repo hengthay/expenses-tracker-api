@@ -1,6 +1,6 @@
 package com.hengthay.myapp.auth;
 
-import com.hengthay.myapp.controllers.Role;
+import com.hengthay.myapp.user.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 

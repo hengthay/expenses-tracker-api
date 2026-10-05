@@ -1,7 +1,7 @@
 package com.hengthay.myapp.auth;
 
-import com.hengthay.myapp.dtos.UserDto;
-import com.hengthay.myapp.mappers.UserMapper;
+import com.hengthay.myapp.user.UserDto;
+import com.hengthay.myapp.user.UserMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;

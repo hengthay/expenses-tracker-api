@@ -1,15 +1,15 @@
-package com.hengthay.myapp.mappers;
+package com.hengthay.myapp.user;
 
-import com.hengthay.myapp.dtos.RegisterUserDto;
-import com.hengthay.myapp.dtos.RequestUserUpdate;
-import com.hengthay.myapp.dtos.UserDto;
 import com.hengthay.myapp.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    // mapping to dtos
     UserDto toDto(User user);
+    // mapping to entity
     User toEntity(RegisterUserDto userDto);
+    // update mapping (modifies the existing User entity in place)
     void update(RequestUserUpdate request, @MappingTarget User user);
 }

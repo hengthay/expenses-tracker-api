@@ -1,11 +1,13 @@
-package com.hengthay.myapp.dtos;
+package com.hengthay.myapp.user;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RequestUserUpdate {
-    private String name;
+public class UserDto {
+    private Long id;
     private String email;
+    private String username;
 }

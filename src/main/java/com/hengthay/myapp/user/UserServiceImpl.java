@@ -1,6 +1,5 @@
-package com.hengthay.myapp.services;
+package com.hengthay.myapp.user;
 
-import com.hengthay.myapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +11,7 @@ import java.util.Collections;
 
 @AllArgsConstructor
 @Service
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
