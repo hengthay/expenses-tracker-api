@@ -1,6 +1,6 @@
 package com.hengthay.myapp.category;
 
-import com.hengthay.myapp.entities.Transaction;
+import com.hengthay.myapp.transaction.Transaction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

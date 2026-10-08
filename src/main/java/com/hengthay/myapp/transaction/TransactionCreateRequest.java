@@ -1,13 +1,14 @@
-package com.hengthay.myapp.dtos;
+package com.hengthay.myapp.transaction;
 
-import com.hengthay.myapp.controllers.TransactionType;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
-public class TransactionUpdateRequest {
+public class TransactionCreateRequest {
+    private UUID accountId;
     private Long categoryId;
     private BigDecimal amount;
     private TransactionType type;

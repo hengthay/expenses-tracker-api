@@ -1,33 +1,25 @@
-package com.hengthay.myapp.controllers;
+package com.hengthay.myapp.transaction;
 
-import com.hengthay.myapp.dtos.TransactionCreateRequest;
-import com.hengthay.myapp.dtos.TransactionDto;
-import com.hengthay.myapp.dtos.TransactionUpdateRequest;
-import com.hengthay.myapp.mappers.TransactionMapper;
 import com.hengthay.myapp.account.AccountRepository;
-import com.hengthay.myapp.category.CategoryRepository;
-import com.hengthay.myapp.repository.TransactionRepository;
 import com.hengthay.myapp.auth.AuthService;
+import com.hengthay.myapp.category.CategoryNotFoundException;
+import com.hengthay.myapp.category.CategoryRepository;
+import com.hengthay.myapp.user.UserNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/transactions")
+@Service
 @AllArgsConstructor
-public class TransactionController {
-
+public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final AuthService authService;
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
 
-    @GetMapping
     public List<TransactionDto> getAllTransactions() {
         return transactionRepository.findAll()
                 .stream()
@@ -35,71 +27,58 @@ public class TransactionController {
                 .toList();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TransactionDto> getTransactionById(
-            @PathVariable UUID id
-            ) {
+    public TransactionDto getTransactionById(UUID id) {
         var transaction = transactionRepository.findById(id).orElse(null);
 
         if(transaction == null)
-            return ResponseEntity.notFound().build();
+            throw new TransactionNotFoundException();
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(transactionMapper.toDto(transaction));
+        return transactionMapper.toDto(transaction);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<TransactionDto> getMyTransaction() {
+    public List<TransactionDto> getMyTransaction() {
         var user = authService.getCurrentUser();
 
         if(user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UserNotFoundException();
         }
 
-        var transaction = transactionRepository.findByUserId(user.getId()).orElse(null);
+        var transaction = transactionRepository.findByUserId(user.getId());
 
-        if(transaction == null)
-            return ResponseEntity.notFound().build();
+        if(transaction.isEmpty())
+            throw new TransactionNotFoundException();
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(transactionMapper.toDto(transaction));
+        return transaction.stream().map(transactionMapper::toDto).toList();
     }
 
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<TransactionDto>> getTransactionByAccount(
-            @PathVariable UUID accountId
-    ) {
-        var transactions = transactionRepository
-                            .findAllByAccountId(accountId)
-                            .stream()
-                            .map(transactionMapper::toDto)
-                            .toList();
+    public List<TransactionDto> getTransactionByAccount(UUID accountId) {
 
-        return ResponseEntity.ok(transactions);
+        return transactionRepository
+                .findAllByAccountId(accountId)
+                .stream()
+                .map(transactionMapper::toDto)
+                .toList();
     }
 
-    @PostMapping
-    public ResponseEntity<TransactionDto> createTransaction(
-            @RequestBody TransactionCreateRequest request
-            ) {
+    public TransactionDto createTransaction(TransactionCreateRequest request) {
         var user = authService.getCurrentUser();
 
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        if(user == null)
+            throw new UserNotFoundException();
+
 
         // find account id
         var account = accountRepository.findById(request.getAccountId()).orElse(null);
 
         if(!account.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccountDeniedException();
         }
 
         var category = categoryRepository.findById(request.getCategoryId()).orElse(null);
         // Category doesn't exist
-        if(category == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        if(category == null)
+            throw new CategoryNotFoundException();
+
 
         var transactionEntity = transactionMapper.toEntity(request);
 
@@ -118,35 +97,30 @@ public class TransactionController {
 
         accountRepository.save(account);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(transactionMapper.toDto(savedTransaction));
+        return transactionMapper.toDto(savedTransaction);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TransactionDto> updateTransaction(
-            @PathVariable UUID id,
-            @RequestBody TransactionUpdateRequest request
-            ) {
+    public TransactionDto updateTransaction(UUID id, TransactionUpdateRequest request) {
         var user = authService.getCurrentUser();
 
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        if(user == null)
+            throw new UserNotFoundException();
+
 
         var transaction = transactionRepository.findById(id).orElse(null);
 
         if(transaction == null)
-            return ResponseEntity.notFound().build();
+            throw new TransactionNotFoundException();
 
         // ensure the user owns this transaction
         if(!transaction.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccountDeniedException();
         }
 
         var category = categoryRepository.findById(request.getCategoryId()).orElse(null);
-        if (category == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (category == null)
+            throw new CategoryNotFoundException();
+
 
         // get account from transaction
         var account = transaction.getAccount();
@@ -170,27 +144,24 @@ public class TransactionController {
         accountRepository.save(account);
         var savedTransaction = transactionRepository.save(transaction);
 
-        return ResponseEntity.ok(transactionMapper.toDto(savedTransaction));
+        return transactionMapper.toDto(savedTransaction);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransaction(
-            @PathVariable UUID id
-    ) {
+    public void deleteTransaction(UUID id) {
         var user = authService.getCurrentUser();
 
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        if(user == null)
+            throw new UserNotFoundException();
+
 
         var transaction = transactionRepository.findById(id).orElse(null);
 
         if(transaction == null)
-            return ResponseEntity.notFound().build();
+            throw new TransactionNotFoundException();
 
         // ensure the user owns this transaction
         if(!transaction.getUser().getId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new AccountDeniedException();
         }
 
         // get account from transaction
@@ -203,7 +174,5 @@ public class TransactionController {
         }
         accountRepository.save(account);
         transactionRepository.delete(transaction);
-
-        return ResponseEntity.ok("Transaction deleted successfully!");
     }
 }

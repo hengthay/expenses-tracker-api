@@ -3,6 +3,8 @@ package com.hengthay.myapp.config;
 import com.hengthay.myapp.account.AccountDeleteException;
 import com.hengthay.myapp.account.UserAccountNotFoundException;
 import com.hengthay.myapp.category.CategoryNotFoundException;
+import com.hengthay.myapp.transaction.AccountDeniedException;
+import com.hengthay.myapp.transaction.TransactionNotFoundException;
 import com.hengthay.myapp.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +80,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    // Handling on transaction not found exception
+    @ExceptionHandler(TransactionNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleTransactionNotFound(TransactionNotFoundException ex) {
+        var errorResponse = new HashMap<String, Object>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
+        errorResponse.put("error", "Not Found");
+        errorResponse.put("message", ex.getMessage());
 
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    // Handling on account denied exception
+    @ExceptionHandler(AccountDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccountDenied(AccountDeniedException ex) {
+        var errorResponse = new HashMap<String, Object>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.FORBIDDEN.value());
+        errorResponse.put("error", "Access Denied");
+        errorResponse.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
 }

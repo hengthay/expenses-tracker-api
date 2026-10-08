@@ -1,6 +1,6 @@
 package com.hengthay.myapp.account;
 
-import com.hengthay.myapp.entities.Transaction;
+import com.hengthay.myapp.transaction.Transaction;
 import com.hengthay.myapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

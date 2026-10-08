@@ -1,8 +1,7 @@
-package com.hengthay.myapp.dtos;
+package com.hengthay.myapp.transaction;
 
 import com.hengthay.myapp.account.AccountDto;
 import com.hengthay.myapp.category.CategoryDto;
-import com.hengthay.myapp.controllers.TransactionType;
 import lombok.Data;
 
 import java.math.BigDecimal;

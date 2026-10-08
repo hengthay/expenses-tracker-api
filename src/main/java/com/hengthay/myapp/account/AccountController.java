@@ -53,7 +53,7 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @DeleteMapping("/{id}/delete-account")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAccount(
             @PathVariable UUID id
     ) {

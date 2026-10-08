@@ -52,11 +52,12 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    private Category getCategory(Long id) {
+    public Category getCategory(Long id) {
         var category = categoryRepository.findById(id).orElse(null);
 
         if(category == null)
             throw new CategoryNotFoundException();
+
         return category;
     }
 }

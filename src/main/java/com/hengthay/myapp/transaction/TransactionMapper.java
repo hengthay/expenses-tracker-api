@@ -1,9 +1,5 @@
-package com.hengthay.myapp.mappers;
+package com.hengthay.myapp.transaction;
 
-import com.hengthay.myapp.dtos.TransactionCreateRequest;
-import com.hengthay.myapp.dtos.TransactionDto;
-import com.hengthay.myapp.dtos.TransactionUpdateRequest;
-import com.hengthay.myapp.entities.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

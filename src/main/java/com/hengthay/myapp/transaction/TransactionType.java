@@ -1,4 +1,4 @@
-package com.hengthay.myapp.controllers;
+package com.hengthay.myapp.transaction;
 
 public enum TransactionType {
     INCOME,
