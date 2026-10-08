@@ -1,8 +1,5 @@
-package com.hengthay.myapp.mappers;
+package com.hengthay.myapp.category;
 
-import com.hengthay.myapp.dtos.CategoryDto;
-import com.hengthay.myapp.dtos.CategoryRequest;
-import com.hengthay.myapp.entities.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

@@ -1,6 +1,5 @@
 package com.hengthay.myapp.user;
 
-import com.hengthay.myapp.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

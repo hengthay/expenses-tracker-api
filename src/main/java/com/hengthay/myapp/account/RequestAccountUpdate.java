@@ -1,9 +1,6 @@
-package com.hengthay.myapp.dtos;
+package com.hengthay.myapp.account;
 
-import com.hengthay.myapp.controllers.AccountType;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 @Data
 public class RequestAccountUpdate {

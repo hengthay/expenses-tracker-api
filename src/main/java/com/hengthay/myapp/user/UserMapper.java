@@ -1,6 +1,5 @@
 package com.hengthay.myapp.user;
 
-import com.hengthay.myapp.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

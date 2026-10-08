@@ -1,9 +1,5 @@
-package com.hengthay.myapp.mappers;
+package com.hengthay.myapp.account;
 
-import com.hengthay.myapp.dtos.AccountCreateRequest;
-import com.hengthay.myapp.dtos.AccountDto;
-import com.hengthay.myapp.dtos.RequestAccountUpdate;
-import com.hengthay.myapp.entities.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

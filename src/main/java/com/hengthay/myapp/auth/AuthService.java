@@ -1,6 +1,6 @@
 package com.hengthay.myapp.auth;
 
-import com.hengthay.myapp.entities.User;
+import com.hengthay.myapp.user.User;
 import com.hengthay.myapp.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

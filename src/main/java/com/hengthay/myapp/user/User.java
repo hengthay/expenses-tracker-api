@@ -1,6 +1,7 @@
-package com.hengthay.myapp.entities;
+package com.hengthay.myapp.user;
 
-import com.hengthay.myapp.user.Role;
+import com.hengthay.myapp.account.Account;
+import com.hengthay.myapp.entities.Transaction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

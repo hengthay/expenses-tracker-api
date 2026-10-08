@@ -1,6 +1,5 @@
-package com.hengthay.myapp.repository;
+package com.hengthay.myapp.account;
 
-import com.hengthay.myapp.entities.Account;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

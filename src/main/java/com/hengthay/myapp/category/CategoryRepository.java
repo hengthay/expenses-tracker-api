@@ -1,6 +1,5 @@
-package com.hengthay.myapp.repository;
+package com.hengthay.myapp.category;
 
-import com.hengthay.myapp.entities.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
