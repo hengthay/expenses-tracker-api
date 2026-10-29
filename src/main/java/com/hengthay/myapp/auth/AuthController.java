@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
@@ -56,6 +58,13 @@ public class AuthController {
         var userDto = userMapper.toDto(user);
 
         return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/health-check")
+    public ResponseEntity<Map<String, String>> health() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                Map.of("status", "ok")
+        );
     }
 
     // Handle unauthorize if invalid information

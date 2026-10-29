@@ -37,18 +37,22 @@ public class AccountService {
         return accountMapper.toDto(account);
     }
 
-    public AccountDto getMyAccount() {
+    public List<AccountDto> getMyAccount() {
         var user = authService.getCurrentUser();
 
         if(user == null)
             throw new UserNotFoundException();
 
-        var account = accountRepository.findByUserId(user.getId()).orElse(null);
+        var account = accountRepository.findByUserId(user.getId());
 
-        if(account == null)
+        if(account.isEmpty())
             throw new UserAccountNotFoundException();
 
-        return accountMapper.toDto(account);
+        var accountLists = account
+                            .stream()
+                            .map(accountMapper::toDto)
+                            .toList();
+        return accountLists;
     }
 
     public AccountDto registerAccount(AccountCreateRequest request) {

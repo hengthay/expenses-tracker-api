@@ -58,6 +58,20 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    public AdminUpdateUserDto updateByAdmin(Long id, RequestAdminUserByAdmin request) {
+        var user = userRepository.findById(id).orElse(null);
+
+        if(user == null)
+            throw new UserNotFoundException();
+
+        // update record from dto and target to current user that was found
+        userMapper.updateByAdmin(request, user);
+        // then save new record
+        userRepository.save(user);
+
+        return userMapper.toAdminDto(user);
+    }
+
     public void deleteUser(Long id) {
         var user = userRepository.findById(id).orElse(null);
 

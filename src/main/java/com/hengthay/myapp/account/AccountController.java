@@ -27,7 +27,7 @@ public class AccountController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<AccountDto> getMyAccount() {
+    public ResponseEntity<List<AccountDto>> getMyAccount() {
         var userAccount = accountService.getMyAccount();
 
         return ResponseEntity.ok(userAccount);

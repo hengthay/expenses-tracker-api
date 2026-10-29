@@ -66,7 +66,6 @@ public class TransactionService {
         if(user == null)
             throw new UserNotFoundException();
 
-
         // find account id
         var account = accountRepository.findById(request.getAccountId()).orElse(null);
 

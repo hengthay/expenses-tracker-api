@@ -54,16 +54,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Ensure CORS configuration from WebMvcConfigurer is picked up by Spring Security
+                .cors(cors -> cors.configure(http))
                 .sessionManagement(c ->
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( c -> {
-                            c.requestMatchers("/api/users/**").permitAll();
-                            c.requestMatchers("/api/categories/**").permitAll();
+                            c.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll(); // allow swagger
+                            c.requestMatchers(HttpMethod.GET, "/api/users/**").hasRole(Role.ADMIN.name());
+                            c.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll();
+                            c.requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole(Role.ADMIN.name());
+                            c.requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole(Role.ADMIN.name());
+                            c.requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole(Role.ADMIN.name());
                             c.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
                             c.requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll();
                             c.requestMatchers(HttpMethod.GET, "/api/accounts").hasRole(Role.ADMIN.name()); // allow only admin
-                            c.requestMatchers(HttpMethod.GET, "/api/transactions").permitAll();
+                            c.requestMatchers(HttpMethod.GET, "/api/transactions").hasRole(Role.ADMIN.name());
                             c.anyRequest().authenticated();
                         }
                 )
